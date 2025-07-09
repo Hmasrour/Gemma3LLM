@@ -5,3 +5,6 @@ sentence-transformers
 torch
 transformers
 python-dotenv
+pdf2image
+pytesseract
+pillow
