@@ -15,7 +15,8 @@ class DocumentProcessor:
         )
         self.client = chromadb.PersistentClient(path="./chroma_db")
 
-    def extract_text(self, pdf_path: str) -> str:
+    @staticmethod
+    def extract_text(pdf_path: str) -> str:
         reader = PdfReader(pdf_path)
         text = ""
         for page in reader.pages:
@@ -32,7 +33,8 @@ class DocumentProcessor:
                            chunks: List[str],
                            embeddings,
                            metadata: Dict[str, Any]):
-        collection = self.client.get_or_create_collection(name="reports")  # to avoid creating a new collection every time
+        collection = self.client.get_or_create_collection(
+            name="reports")  # to avoid creating a new collection every time
         ids = [f"doc_{hash(chunk)}_{i}" for i, chunk in enumerate(chunks)]
 
         # Create one metadata dict per chunk
@@ -46,7 +48,7 @@ class DocumentProcessor:
             })
             metadatas.append(chunk_metadata)
 
-        collection.upsert( # upsert instead of add to avoid adding the same documents every time
+        collection.upsert(  # upsert instead of add to avoid adding the same documents every time
             embeddings=embeddings.tolist(),
             documents=chunks,
             ids=ids,
@@ -54,7 +56,7 @@ class DocumentProcessor:
         )
         return ids
 
-    def process_document(self, pdf_path: str, report_metadata: Dict[str, Any]):
+    def process_document(self, pdf_path: str, report_metadata: Dict[str, Any]):  # Pipeline architecture
         text = self.extract_text(pdf_path)
         chunks = self.chunk_text(text)
         embeddings = self.generate_embeddings(chunks)

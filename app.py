@@ -19,14 +19,14 @@ gemma_llm = Gemma3Llm(
 processor = DocumentProcessor()
 
 # App title
-st.title("Report Analyzer with Gemma 3")
+st.title("Report Analyzer")
 
 # Sidebar for document upload
 with st.sidebar:
     st.header("Upload Reports")
     uploaded_files = st.file_uploader(
         "Choose PDF files",
-        type="pdf",
+        type=["pdf"],
         accept_multiple_files=True
     )
 
